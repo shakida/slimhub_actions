@@ -8,21 +8,14 @@ fi
 # Make Sure The Environment Is Non-Interactive
 export DEBIAN_FRONTEND=noninteractive
 
-# Prepare: Just To Populate Workflow Output Window
-until [[ "${SECONDS_LEFT:=10}" = 0 ]]; do
-  printf "Please wait %ss ...\n" "${SECONDS_LEFT}"
-  sleep 0.5
-  SECONDS_LEFT=$(echo "${SECONDS_LEFT} - 0.5" | bc)
-done
-unset SECONDS_LEFT
-
 echo "::group::Disk Space Before Cleanup"
 df -hlT /
 echo "::endgroup::"
 
-echo "::group::Clearing Docker Image Caches"
-docker rmi -f $(docker images -q) &>/dev/null
-echo "::endgroup::"
+# It's consuming time
+# echo "::group::Clearing Docker Image Caches"
+# docker rmi -f $(docker images -q) &>/dev/null
+# echo "::endgroup::"
 
 echo "::group::Uninstalling Unnecessary Applications"
 sudo -EH apt-fast -qq -y update &>/dev/null
@@ -84,12 +77,14 @@ echo "::endgroup::"
   echo "will cite" | parallel --citation
 } &>/dev/null
 
+# Homebrew (un)installer. https://github.com/Homebrew/install
 echo "::group::Removing Homebrew Completely"
 curl -sL https://raw.githubusercontent.com/Homebrew/install/master/uninstall.sh -o uninstall-brew.sh && chmod a+x uninstall-brew.sh
 ./uninstall-brew.sh -f -q &>/dev/null
 sudo rm -rf -- ./uninstall-brew.sh /home/linuxbrew &>/dev/null
 echo "::endgroup::"
 
+# Comment it if you need NodeJS, NPM & NPX
 echo "::group::Removing NodeJS, NPM & NPX"
 {
   sudo npm list -g --depth=0. 2>/dev/null | awk -F ' ' '{print $2}' | awk -F '@[0-9]' '{print $1}' | grep -v "^n$" | sudo xargs npm remove -g
@@ -135,6 +130,7 @@ echo "::group::Disk Space After Cleanup"
 df -hlT /
 echo "::endgroup::"
 
+# Config it with your need
 printf "\nIf this action really helped you,\n Go to https://github.com/marketplace/actions/github-actions-cleaner\n And show your love by giving a star.\n\n"
 
 exit
