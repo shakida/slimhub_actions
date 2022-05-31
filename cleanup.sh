@@ -13,9 +13,9 @@ df -hlT /
 echo "::endgroup::"
 
 # It's consuming time
-# echo "::group::Clearing Docker Image Caches"
-# docker rmi -f $(docker images -q) &>/dev/null
-# echo "::endgroup::"
+echo "::group::Clearing Docker Image Caches"
+docker rmi -f $(docker images -q) &>/dev/null
+echo "::endgroup::"
 
 echo "::group::Uninstalling Unnecessary Applications"
 sudo -EH apt-fast -qq -y update &>/dev/null
@@ -50,6 +50,7 @@ sudo -EH apt-fast -qq -y purge \
   nuget packages-microsoft-prod snapd yarn \
   php-* php5* php7* php8* snmp \
   &>/dev/null
+printf "Removed check"
 sudo -EH apt-fast -qq -y autoremove &>/dev/null
 {
   sudo update-alternatives --install /usr/bin/gcc gcc /usr/bin/gcc-10 100
