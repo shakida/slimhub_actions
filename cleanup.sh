@@ -50,7 +50,9 @@ sudo -EH apt-fast -qq -y purge \
   nuget packages-microsoft-prod snapd yarn \
   php-* php5* php7* php8* snmp \
   &>/dev/null
-printf "Removed check"
+echo "::group::Disk Space check"
+df -hlT /
+echo "::endgroup::"
 sudo -EH apt-fast -qq -y autoremove &>/dev/null
 {
   sudo update-alternatives --install /usr/bin/gcc gcc /usr/bin/gcc-10 100
@@ -72,6 +74,8 @@ sudo -EH apt-fast -qq -y autoremove &>/dev/null
   sudo update-alternatives --install /usr/bin/gcc-ranlib gcc-ranlib /usr/bin/gcc-ranlib-10 100
   sudo update-alternatives --install /usr/bin/gcc-ranlib gcc-ranlib /usr/bin/gcc-ranlib-9 90
 } &>/dev/null
+echo "::group::Disk Space check"
+df -hlT /
 echo "::endgroup::"
 
 {
